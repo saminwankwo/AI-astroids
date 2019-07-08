@@ -34,12 +34,52 @@ class NeuralNetwork {
     feedForward(inputArray) {
         //convert input  to maatrix
         let inputs = Matrix.convertFromArray(inputArray);
-
+     
         //find hidden values and apply activation function
+        let hidden = Matrix.dot(inputs, this._weights0);
+        hidden = Matrix.map(hidden, x => sigmoid(x));
+     
+        //find the output values and apply activation function
+        let outputs = Matrix.dot(hidden, this._weights1);
+        outputs = Matrix.map(outputs, x => sigmoid(x));
+
+        return outputs;
+
+        //apply bias?
+ 
         
     }
 
+    //Train using inputs and target arrays(one dimensional);
+    train(inputArray, targetArray) {
+        //feed the input data through the network
+        let outputs = this.feedForward(inputArray);
+        console.log("outputs");
+        console.table(outputs.data);
+
+
+        //calculate the output errors(targets - outputs)
+        let targets = Matrix.convertFromArray(targetArray);
+        console.log("targets");
+        console.table(targets.data);
+        let outputErrors = Matrix.subtract(targets, outputs);
+        console.log("outputErrors");
+        console.table(outputErrors.data);
+
+        //calculate the deltas (errors * derivative of the output)
+        let outputDrivs = Matrix.map(outputs, x => )
+
+    }
+
 }
+
+function sigmoid(x, driv = false) {
+    if (driv) {
+        return x * (1 * x); // where x = sigmoid(x)
+    }
+    return 1 / (1 + Math.exp(-x));
+}
+
 
 /************************
     MATRIX FUNCTIONS
@@ -123,7 +163,7 @@ class Matrix{
         if (m0.cols != m1.rows) {
             throw new Error("Matrices is not \"dot\" compartible");
         }
-        let m = new Matrix(m0.cols, m1.rows);
+        let m = new Matrix(m0.rows, m1.cols);
         for (let i = 0; i < m.rows; i++) {
             for (let j = 0; j < m.cols; j++) {
                 let sum = 0;
